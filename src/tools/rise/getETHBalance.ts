@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { getProvider, getAgentAddress } from "../../core/client";
 
-export const getSBalance = async ({ 
+export const getETHBalance = async ({ 
   walletAddress
 }: { 
   walletAddress?: string;

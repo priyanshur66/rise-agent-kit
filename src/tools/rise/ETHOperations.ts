@@ -1,7 +1,7 @@
 import { ethers, parseEther } from "ethers";
 import { getSigner, getProvider, getAgentAddress } from "../../core/client";
 
-export const transferS = async ({
+export const transferETH = async ({
   toAddress,
   amount
 }: {
