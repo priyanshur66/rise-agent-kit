@@ -69,7 +69,7 @@ const deployContractSchema = z.object({
 export const createTools = (agent: RiseAgentInterface) => [
   tool(withPrivateKey(transferETH, agent), {
     name: 'transfer_eth',
-    description: 'Transfer ETH (native Rise token) to another wallet',
+    description: 'Transfer ETH (native ETH token) to another wallet',
     schema: transferETHSchema,
   }),
 

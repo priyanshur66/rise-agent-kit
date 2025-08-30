@@ -5,7 +5,7 @@ export const getETHBalance = async ({
   walletAddress
 }: { 
   walletAddress?: string;
-}): Promise<number> => {
+}): Promise<string> => {
   try {
     const provider = getProvider();
     const agentAddress = getAgentAddress();
@@ -23,7 +23,8 @@ export const getETHBalance = async ({
 
     const balance = await provider.getBalance(addressToCheck);
     const formattedBalance = ethers.formatEther(balance);
-    return parseFloat(formattedBalance);
+    const numericBalance = parseFloat(formattedBalance);
+    return `${numericBalance} ETH`;
   } catch (error: any) {
     throw new Error(`Error: ${error.message}`);
   }
