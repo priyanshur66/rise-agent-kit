@@ -2,6 +2,7 @@ import { createTestAgent, type CitreaAgentType } from './setup.js';
 import { CitreaAgent } from '../src/CitreaAgent.js';
 import { HumanMessage, AIMessage, type BaseMessage } from '@langchain/core/messages';
 import { config } from 'dotenv';
+import { getAgentAddress } from '../src/core/client.js';
 
 // Load environment variables
 config();
@@ -248,6 +249,49 @@ await test('create agent with custom memory (preloaded chat)', async () => {
 
   const fresh = await customAgent.execute('What is my name?', { sessionId: 'fresh-session' });
   console.log('Fresh session (should be unknown):', fresh);
+});
+
+// Test swap functionality - V2 swap with native CBTC and WBTC
+await test('swap CBTC to WBTC (V2)', async () => {
+  const WBTC_ADDRESS = '0x3edA22460259b29433704dda71cc921F528165Ea';
+
+  // Check initial balances
+  const initialCBTCBalance = await agent.getCBTCBalance();
+  console.log('Initial CBTC Balance:', initialCBTCBalance);
+
+  const initialWBTCBalance = await agent.getErc20Balance({ tokenAddress: WBTC_ADDRESS });
+  console.log('Initial WBTC Balance:', initialWBTCBalance);
+
+  // Get the agent's actual wallet address
+  const agentWalletAddress = getAgentAddress();
+
+  // For V2 swaps with native tokens, use the zero address as the first token in path
+  const swapResult = await agent.execute(
+    `Execute swap_exact_tokens_for_tokens function with amountIn="0.001", amountOutMin="0.0001", path=["0x0000000000000000000000000000000000000000", "${WBTC_ADDRESS}"], to="${agentWalletAddress}"`
+  );
+  console.log('Swap result:', swapResult);
+
+  // Check final balances
+  const finalCBTCBalance = await agent.getCBTCBalance();
+  console.log('Final CBTC Balance:', finalCBTCBalance);
+
+  const finalWBTCBalance = await agent.getErc20Balance({ tokenAddress: WBTC_ADDRESS });
+  console.log('Final WBTC Balance:', finalWBTCBalance);
+
+  // Verify that CBTC decreased and WBTC increased
+  const cbtcDiff = parseFloat(initialCBTCBalance) - parseFloat(finalCBTCBalance);
+  const wbtcDiff = parseFloat(finalWBTCBalance) - parseFloat(initialWBTCBalance);
+
+  console.log(`CBTC change: -${cbtcDiff}`);
+  console.log(`WBTC change: +${wbtcDiff}`);
+
+  if (cbtcDiff <= 0) {
+    throw new Error('CBTC balance should have decreased after swap');
+  }
+
+  if (wbtcDiff <= 0) {
+    throw new Error('WBTC balance should have increased after swap');
+  }
 });
 
 // Test custom personality

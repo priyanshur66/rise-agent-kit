@@ -7,6 +7,12 @@ import { transferErc20, burnErc20 } from './tools/citrea/erc20Operations.js';
 import { getETHBalance } from './tools/citrea/getETHBalance.js';
 import { getErc20Balance } from './tools/citrea/getErc20Balance.js';
 import { deployContract } from './tools/citrea/deployContract.js';
+import {
+  swapExactTokensForTokens,
+  swapTokensForExactTokens,
+  exactInputSingle,
+  exactOutputSingle
+} from './tools/citrea/swapOperations.js';
 import { setCurrentPrivateKey } from './core/client.js';
 
 // Types
@@ -63,6 +69,42 @@ const deployContractSchema = z.object({
   args: z.array(z.union([z.string(), z.number(), z.boolean()])).nullable().optional().describe('Constructor arguments (optional)'),
 });
 
+const swapExactTokensForTokensSchema = z.object({
+  amountIn: z.string().describe('The amount of tokens to swap (e.g., "1.0")'),
+  amountOutMin: z.string().describe('The minimum amount of tokens to receive (e.g., "0.99")'),
+  path: z.array(z.string()).describe('Array of token addresses for the swap path (e.g., ["0xTokenA", "0xTokenB"])'),
+  to: z.string().describe('The recipient address for the swapped tokens'),
+  deadline: z.number().optional().describe('Optional deadline timestamp (default: current time + 20 minutes)'),
+});
+
+const swapTokensForExactTokensSchema = z.object({
+  amountOut: z.string().describe('The exact amount of tokens to receive (e.g., "1.0")'),
+  amountInMax: z.string().describe('The maximum amount of tokens to spend (e.g., "1.01")'),
+  path: z.array(z.string()).describe('Array of token addresses for the swap path (e.g., ["0xTokenA", "0xTokenB"])'),
+  to: z.string().describe('The recipient address for the swapped tokens'),
+  deadline: z.number().optional().describe('Optional deadline timestamp (default: current time + 20 minutes)'),
+});
+
+const exactInputSingleSchema = z.object({
+  tokenIn: z.string().describe('The input token contract address'),
+  tokenOut: z.string().describe('The output token contract address'),
+  fee: z.number().describe('The pool fee tier (500, 3000, or 10000)'),
+  recipient: z.string().describe('The recipient address for the swapped tokens'),
+  amountIn: z.string().describe('The amount of input tokens to swap (e.g., "1.0")'),
+  amountOutMinimum: z.string().describe('The minimum amount of output tokens to receive (e.g., "0.99")'),
+  sqrtPriceLimitX96: z.string().optional().describe('Optional price limit for the swap'),
+});
+
+const exactOutputSingleSchema = z.object({
+  tokenIn: z.string().describe('The input token contract address'),
+  tokenOut: z.string().describe('The output token contract address'),
+  fee: z.number().describe('The pool fee tier (500, 3000, or 10000)'),
+  recipient: z.string().describe('The recipient address for the swapped tokens'),
+  amountOut: z.string().describe('The exact amount of output tokens to receive (e.g., "1.0")'),
+  amountInMaximum: z.string().describe('The maximum amount of input tokens to spend (e.g., "1.01")'),
+  sqrtPriceLimitX96: z.string().optional().describe('Optional price limit for the swap'),
+});
+
 /**
  * Creates and returns all tools with injected agent credentials
  */
@@ -101,5 +143,29 @@ export const createTools = (agent: CitreaAgentInterface) => [
     name: 'deploy_contract',
     description: 'Deploy a smart contract to Citrea network',
     schema: deployContractSchema,
+  }),
+
+  tool(withPrivateKey(swapExactTokensForTokens, agent), {
+    name: 'swap_exact_tokens_for_tokens',
+    description: 'Swap exact amount of tokens for tokens (V2 style) - specify input amount and minimum output',
+    schema: swapExactTokensForTokensSchema,
+  }),
+
+  tool(withPrivateKey(swapTokensForExactTokens, agent), {
+    name: 'swap_tokens_for_exact_tokens',
+    description: 'Swap tokens for exact amount of tokens (V2 style) - specify exact output and maximum input',
+    schema: swapTokensForExactTokensSchema,
+  }),
+
+  tool(withPrivateKey(exactInputSingle, agent), {
+    name: 'exact_input_single',
+    description: 'V3 exact input single swap - swap exact amount of one token for another through a single pool',
+    schema: exactInputSingleSchema,
+  }),
+
+  tool(withPrivateKey(exactOutputSingle, agent), {
+    name: 'exact_output_single',
+    description: 'V3 exact output single swap - swap tokens to receive exact amount through a single pool',
+    schema: exactOutputSingleSchema,
   }),
 ];
