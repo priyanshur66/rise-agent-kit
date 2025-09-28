@@ -2,26 +2,26 @@ import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 
 // Import functions
-import { transferETH } from './tools/rise/ETHOperations.js';
-import { transferErc20, burnErc20 } from './tools/rise/erc20Operations.js';
-import { getETHBalance } from './tools/rise/getETHBalance.js';
-import { getErc20Balance } from './tools/rise/getErc20Balance.js';
-import { deployContract } from './tools/rise/deployContract.js';
+import { transferETH } from './tools/citrea/ETHOperations.js';
+import { transferErc20, burnErc20 } from './tools/citrea/erc20Operations.js';
+import { getETHBalance } from './tools/citrea/getETHBalance.js';
+import { getErc20Balance } from './tools/citrea/getErc20Balance.js';
+import { deployContract } from './tools/citrea/deployContract.js';
 import { setCurrentPrivateKey } from './core/client.js';
 
 // Types
-type RiseAgentInterface = {
+type CitreaAgentInterface = {
   getCredentials: () => { privateKey: string };
 };
 
 /**
  * Wraps a function to inject the private key from the agent
  * @param fn - The function to wrap
- * @param agent - The RiseAgent instance containing credentials
+ * @param agent - The CitreaAgent instance containing credentials
  */
 const withPrivateKey = <T>(
   fn: (params: T) => Promise<any>,
-  agent: RiseAgentInterface,
+  agent: CitreaAgentInterface,
 ) => {
   return (params: T) => {
     // Set the private key in the client before calling the function
@@ -32,9 +32,9 @@ const withPrivateKey = <T>(
 };
 
 // Schema definitions
-const transferETHSchema = z.object({
-  toAddress: z.string().describe('The wallet address to transfer ETH to'),
-  amount: z.string().describe('The amount of ETH to transfer'),
+const transferCBTCSchema = z.object({
+  toAddress: z.string().describe('The wallet address to transfer CBTC to'),
+  amount: z.string().describe('The amount of CBTC to transfer'),
 });
 
 const transferErc20Schema = z.object({
@@ -48,8 +48,8 @@ const burnErc20Schema = z.object({
   amount: z.string().describe('The amount of tokens to burn'),
 });
 
-const getETHBalanceSchema = z.object({
-  walletAddress: z.string().nullable().optional().describe('The wallet address to check ETH balance (optional, uses agent wallet if not provided)'),
+const getCBTCBalanceSchema = z.object({
+  walletAddress: z.string().nullable().optional().describe('The wallet address to check CBTC balance (optional, uses agent wallet if not provided)'),
 });
 
 const getErc20BalanceSchema = z.object({
@@ -66,11 +66,11 @@ const deployContractSchema = z.object({
 /**
  * Creates and returns all tools with injected agent credentials
  */
-export const createTools = (agent: RiseAgentInterface) => [
+export const createTools = (agent: CitreaAgentInterface) => [
   tool(withPrivateKey(transferETH, agent), {
-    name: 'transfer_eth',
-    description: 'Transfer ETH (native ETH token) to another wallet',
-    schema: transferETHSchema,
+    name: 'transfer_cbtc',
+    description: 'Transfer CBTC (native CBTC token) to another wallet',
+    schema: transferCBTCSchema,
   }),
 
   tool(withPrivateKey(transferErc20, agent), {
@@ -86,9 +86,9 @@ export const createTools = (agent: RiseAgentInterface) => [
   }),
 
   tool(withPrivateKey(getETHBalance, agent), {
-    name: 'get_eth_balance',
-    description: 'Get ETH balance of a wallet',
-    schema: getETHBalanceSchema,
+    name: 'get_cbtc_balance',
+    description: 'Get CBTC balance of a wallet',
+    schema: getCBTCBalanceSchema,
   }),
 
   tool(withPrivateKey(getErc20Balance, agent), {
@@ -99,7 +99,7 @@ export const createTools = (agent: RiseAgentInterface) => [
 
   tool(withPrivateKey(deployContract, agent), {
     name: 'deploy_contract',
-    description: 'Deploy a smart contract to Rise network',
+    description: 'Deploy a smart contract to Citrea network',
     schema: deployContractSchema,
   }),
 ];

@@ -8,8 +8,8 @@ import { SystemMessage } from '@langchain/core/messages';
 import { RunnableWithMessageHistory } from '@langchain/core/runnables';
 import { InMemoryChatMessageHistory, type BaseChatMessageHistory } from '@langchain/core/chat_history';
 
-// Default system prompt for Rise agent
-const DEFAULT_SYSTEM_PROMPT = `You are an AI agent on Rise network capable of executing all kinds of transactions and interacting with the Rise blockchain.
+// Default system prompt for Citrea agent
+const DEFAULT_SYSTEM_PROMPT = `You are an AI agent on Citrea network capable of executing all kinds of transactions and interacting with the Citrea blockchain.
       You are able to execute transactions on behalf of the user.
   
       If the transaction was successful, return the response in the following format:
@@ -38,7 +38,7 @@ export const prompt = (personalityPrompt?: string) => ChatPromptTemplate.fromMes
 ]);
 
 export const createAgent = (
-  riseAgent: { getCredentials: () => { privateKey: string } },
+  citreaAgent: { getCredentials: () => { privateKey: string } },
   modelName: keyof typeof modelMapping,
   openAiApiKey?: string,
   anthropicApiKey?: string,
@@ -74,7 +74,7 @@ export const createAgent = (
     throw new Error('Error initializing model');
   }
 
-  const tools = createTools(riseAgent);
+  const tools = createTools(citreaAgent);
 
   // Create prompt with optional personality
   const agentPrompt = prompt(options?.personalityPrompt);

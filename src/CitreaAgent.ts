@@ -22,7 +22,7 @@ export interface CitreaAgentConfig {
   };
 }
 
-export interface TransferETHParams {
+export interface TransferCBTCParams {
   toAddress: string;
   amount: string;
 }
@@ -116,7 +116,7 @@ export class CitreaAgent {
     return response;
   }
 
-  async transferETH(params: TransferETHParams) {
+  async transferCBTC(params: TransferCBTCParams) {
     setCurrentPrivateKey(this.privateKey);
     return await transferETH(params);
   }
@@ -131,7 +131,7 @@ export class CitreaAgent {
     return await burnErc20(params);
   }
 
-  async getETHBalance(params?: { walletAddress?: string }) {
+  async getCBTCBalance(params?: { walletAddress?: string }) {
     setCurrentPrivateKey(this.privateKey);
     return await getETHBalance(params || {});
   }

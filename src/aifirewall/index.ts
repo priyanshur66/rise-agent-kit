@@ -1,11 +1,11 @@
 import { detectPrivateKeyRequest } from './patternMatching.js';
 import { sanitizePromptWithLLM } from './llmSanitizer.js';
-import type { RiseAgentConfig } from '../RiseAgent.js';
+import type { CitreaAgentConfig } from '../CitreaAgent.js';
 
 export async function applyFirewall(
   prompt: string,
   config: Pick<
-    RiseAgentConfig,
+    CitreaAgentConfig,
     'model' | 'openAiApiKey' | 'anthropicApiKey'
   >,
 ): Promise<string> {

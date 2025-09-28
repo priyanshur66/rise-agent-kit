@@ -24,7 +24,7 @@ export const getETHBalance = async ({
     const balance = await provider.getBalance(addressToCheck);
     const formattedBalance = ethers.formatEther(balance);
     const numericBalance = parseFloat(formattedBalance);
-    return `${numericBalance} ETH`;
+    return `${numericBalance} CBTC`;
   } catch (error: any) {
     throw new Error(`Error: ${error.message}`);
   }

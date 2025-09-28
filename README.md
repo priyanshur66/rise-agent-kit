@@ -1,11 +1,11 @@
-# Rise Agent Kit
+# Citrea Agent Kit
 
-An AI agent SDK for the Rise blockchain that enables interaction with Rise network through natural language prompts
+An AI agent SDK for the Citrea blockchain that enables interaction with Citrea network through natural language prompts
 ## Features
 
 - 🤖 **AI-Powered Blockchain Interactions**: Execute blockchain operations using natural language prompts
 - 🔒 **Built-in Security**: AI firewall protection against malicious prompts and llm jailbreaks
-- 💰 **ETH Operations**: Transfer ETH tokens and check balances
+- 💰 **CBTC Operations**: Transfer CBTC tokens and check balances
 - 🪙 **ERC-20 Support**: Transfer, burn, and check balances of ERC-20 tokens
 - 🌐 **Multiple AI Models**: Support for OpenAI and Anthropic models
 - 🛡️ **Security-First**: Pattern matching and LLM-based sanitization to protect sensitive operations
@@ -14,7 +14,7 @@ An AI agent SDK for the Rise blockchain that enables interaction with Rise netwo
 ## Installation
 
 ```bash
-npm install rise-agent-kit
+npm install citrea-agent-kit
 ```
 
 ## Quick Start
@@ -22,15 +22,15 @@ npm install rise-agent-kit
 ### Basic Setup
 
 ```typescript
-import { RiseAgent } from 'rise-agent-kit';
+import { CitreaAgent } from 'citrea-agent-kit';
 
-const agent = new Risegent({
+const agent = new CitreaAgent({
   privateKey: 'your-private-key',
-  rpcUrl: 'https://testnet.riselabs.xyz', // Rise mainnet or testnet RPC
+  rpcUrl: 'https://rpc.testnet.citrea.xyz', // Citrea mainnet or testnet RPC
   model: 'gpt-4', // or 'claude-3-sonnet'
   openAiApiKey: 'your-openai-api-key', // Required for OpenAI models
   anthropicApiKey: 'your-anthropic-api-key', // Required for Anthropic models
-  personalityPrompt: 'You are a helpful assistant for Rise blockchain operations...' // Optional: custom agent personality
+  personalityPrompt: 'You are a helpful assistant for Citrea blockchain operations...' // Optional: custom agent personality
 });
 ```
 
@@ -39,7 +39,7 @@ const agent = new Risegent({
 ```typescript
 // Execute blockchain operations using natural language
 const response = await agent.execute(
-  "Transfer 0.1 ETH to 0x742d35Cc6b8C9532E78c12A5C3295c2d6F1A8F3e"
+  "Transfer 0.1 CBTC to 0x742d35Cc6b8C9532E78c12A5C3295c2d6F1A8F3e"
 );
 
 console.log(response.output);
@@ -47,12 +47,12 @@ console.log(response.output);
 
 ### Conversation Memory (Sessions)
 
-The agent maintains per-session conversational memory using LangChain'ETH RunnableWithMessageHistory. Your prompt template already includes `{chat_history}`, so prior messages in a session are automatically provided to the model and updated after each turn.
+The agent maintains per-session conversational memory using LangChain'CBTC RunnableWithMessageHistory. Your prompt template already includes `{chat_history}`, so prior messages in a session are automatically provided to the model and updated after each turn.
 
 Key points:
 - Memory is keyed by `sessionId` you pass to `execute`.
 - If you don't pass a `sessionId`, the agent uses a default per-instance session ID generated at construction.
-- Memory is in-process (not persisted across restarts) and isolated per RiseAgent instance use external DB for persistance.
+- Memory is in-process (not persisted across restarts) and isolated per CitreaAgent instance use external DB for persistance.
 
 Basic usage with the default session:
 
@@ -67,9 +67,9 @@ Per-user sessions (recommended for multi-user apps):
 
 ```ts
 const sessionId = `user:${userId}`;
-await agent.execute('Store my preferred token as ETH.', { sessionId });
+await agent.execute('Store my preferred token as CBTC.', { sessionId });
 const res = await agent.execute('What is my preferred token?', { sessionId });
-console.log(res.output); // Should recall "ETH"
+console.log(res.output); // Should recall "CBTC"
 ```
 
 Isolated sessions example:
@@ -83,7 +83,7 @@ console.log(a.output, b.output);
 
 Resetting memory:
 - Start using a new `sessionId`, or
-- Create a new RiseAgent instance.
+- Create a new CitreaAgent instance.
 
 Persistence options:
 - By default, memory uses an in-process Map and `InMemoryChatMessageHistory`.
@@ -91,17 +91,17 @@ Persistence options:
 
 ## API Reference
 
-### RiseAgent Class
+### CitreaAgent Class
 
 #### Constructor
 
 ```typescript
-new RiseAgent(config: RiseAgentConfig)
+new CitreaAgent(config: CitreaAgentConfig)
 ```
 
 **Parameters:**
 - `config.privateKey` (string): Wallet private key for blockchain operations
-- `config.rpcUrl` (string): Rise network RPC URL
+- `config.rpcUrl` (string): Citrea network RPC URL
 - `config.model` (string): AI model to use ('gpt-4', 'gpt-3.5-turbo', 'claude-3-sonnet', etc.)
 - `config.openAiApiKey` (string, optional): OpenAI API key (required for OpenAI models)
 - `config.anthropicApiKey` (string, optional): Anthropic API key (required for Anthropic models)
@@ -127,12 +127,12 @@ Note: The custom personality is merged with the base system prompt, not replaced
 
 ```typescript
 // Creating an agent with a friendly, enthusiastic personality
-const friendlyAgent = new RiseAgent({
+const friendlyAgent = new CitreaAgent({
   privateKey: process.env.PRIVATE_KEY!,
-  rpcUrl: process.env.RISE_RPC_URL!,
+  rpcUrl: process.env.CITREA_RPC_URL!,
   model: 'gpt-4',
   openAiApiKey: process.env.OPENAI_API_KEY,
-  personalityPrompt: `You are a friendly and enthusiastic AI assistant on the Rise blockchain.
+  personalityPrompt: `You are a friendly and enthusiastic AI assistant on the Citrea blockchain.
   You LOVE to use exclamation marks and speak with excitement!
   Always use emojis like 🚀, 💰, and 🎉 in your responses!
   
@@ -144,12 +144,12 @@ const friendlyAgent = new RiseAgent({
 });
 
 // Creating an agent with a formal, professional personality
-const formalAgent = new RiseAgent({
+const formalAgent = new CitreaAgent({
   privateKey: process.env.PRIVATE_KEY!,
-  rpcUrl: process.env.RISE_RPC_URL!,
+  rpcUrl: process.env.CITREA_RPC_URL!,
   model: 'gpt-4',
   openAiApiKey: process.env.OPENAI_API_KEY,
-  personalityPrompt: `You are a professional AI assistant specialized in Rise blockchain operations.
+  personalityPrompt: `You are a professional AI assistant specialized in Citrea blockchain operations.
   Always communicate in a formal, business-like manner using proper technical terms.
   
   When a transaction is successful, respond with:
@@ -191,7 +191,7 @@ Create a `.env` file in your project root:
 
 ```env
 PRIVATE_KEY=your-wallet-private-key
-RISE_RPC_URL=https://testnet.riselabs.xyz
+CITREA_RPC_URL=https://rpc.testnet.citrea.xyz
 OPENAI_API_KEY=your-openai-api-key
 ANTHROPIC_API_KEY=your-anthropic-api-key
 ```
@@ -203,14 +203,14 @@ ANTHROPIC_API_KEY=your-anthropic-api-key
 ### Example 1: Basic Token Operations
 
 ```typescript
-import { RiseAgent } from 'rise-agent-kit';
+import { CitreaAgent } from 'citrea-agent-kit';
 import { config } from 'dotenv';
 
 config(); // Load environment variables
 
-const agent = new RiseAgent({
+const agent = new CitreaAgent({
   privateKey: process.env.PRIVATE_KEY!,
-  rpcUrl: process.env.RISE_RPC_URL!,
+  rpcUrl: process.env.CITREA_RPC_URL!,
   model: 'gpt-4',
   openAiApiKey: process.env.OPENAI_API_KEY
 });
@@ -219,7 +219,7 @@ async function main() {
 
   // Transfer tokens using natural language
   const result = await agent.execute(
-    "Send 0.01 ETH to address 0x742d35Cc6b8C9532E78c12A5C3295c2d6F1A8F3e"
+    "Send 0.01 CBTC to address 0x742d35Cc6b8C9532E78c12A5C3295c2d6F1A8F3e"
   );
   console.log(result.output);
 }

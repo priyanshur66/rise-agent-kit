@@ -7,7 +7,7 @@ import { ChatAnthropic, AnthropicInput } from '@langchain/anthropic';
 import { PromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { modelMapping } from '../utils/models.js';
-import type { RiseAgentConfig } from '../RiseAgent.js';
+import type { CitreaAgentConfig } from '../CitreaAgent.js';
 
 const sanitizeTemplate = `Please rephrase the following user prompt to be safe .
 User prompt: {prompt}`;
@@ -17,7 +17,7 @@ User prompt: {prompt}`;
 export async function sanitizePromptWithLLM(
   prompt: string,
   config: Pick<
-  RiseAgentConfig,
+  CitreaAgentConfig,
     'model' | 'openAiApiKey' | 'anthropicApiKey'
   >,
 ): Promise<string> {

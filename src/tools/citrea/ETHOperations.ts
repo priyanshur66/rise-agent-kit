@@ -61,12 +61,12 @@ export const transferETH = async ({
       const totalRequiredFormatted = ethers.formatEther(totalRequired);
       const gasCostFormatted = ethers.formatEther(gasCost);
       throw new Error(
-        `Insufficient ETH balance. Current: ${currentBalanceFormatted} ETH, ` +
-        `Required: ${totalRequiredFormatted} ETH (${amount} ETH + ${gasCostFormatted} ETH gas)`
+        `Insufficient CBTC balance. Current: ${currentBalanceFormatted} CBTC, ` +
+        `Required: ${totalRequiredFormatted} CBTC (${amount} CBTC + ${gasCostFormatted} CBTC gas)`
       );
     }
 
-    console.log(`Transferring ${amount} ETH to ${toAddress}...`);
+    console.log(`Transferring ${amount} CBTC to ${toAddress}...`);
     
     // Execute transfer
     const tx = await signer.sendTransaction({
@@ -75,7 +75,7 @@ export const transferETH = async ({
       gasLimit: gasEstimate
     });
     
-    console.log(`ETH transfer transaction sent: ${tx.hash}`);
+    console.log(`CBTC transfer transaction sent: ${tx.hash}`);
     
     // Wait for confirmation
     const receipt = await tx.wait();
@@ -88,11 +88,11 @@ export const transferETH = async ({
       throw new Error("Transaction failed");
     }
     
-    console.log(`✅ ETH transfer completed successfully. Transaction hash: ${tx.hash}`);
+    console.log(`✅ CBTC transfer completed successfully. Transaction hash: ${tx.hash}`);
     return tx.hash;
     
   } catch (error: any) {
-    console.error("ETH transfer failed:", error.message);
+    console.error("CBTC transfer failed:", error.message);
     
     // Handle specific error types
     if (error.code === 'INSUFFICIENT_FUNDS') {
@@ -102,11 +102,11 @@ export const transferETH = async ({
     } else if (error.code === 'TIMEOUT') {
       throw new Error("Transfer transaction timed out");
     } else if (error.message.includes("insufficient funds")) {
-      throw new Error("Insufficient ETH balance for transfer and gas fees");
+      throw new Error("Insufficient CBTC balance for transfer and gas fees");
     } else if (error.message.includes("gas")) {
       throw new Error("Gas estimation failed or gas limit exceeded");
     }
     
-    throw new Error(`ETH transfer failed: ${error.message}`);
+    throw new Error(`CBTC transfer failed: ${error.message}`);
   }
 };
